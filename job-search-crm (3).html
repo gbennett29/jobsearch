@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Search CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --surface: #18181b;
+    --surface2: #232327;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #f0ede8;
+    --muted: #888884;
+    --hint: #555552;
+    --accent: #c8f06a;
+    --accent-dim: rgba(200,240,106,0.1);
+    --accent-dim2: rgba(200,240,106,0.18);
+    --red: #f07070;
+    --red-dim: rgba(240,112,112,0.1);
+    --amber: #f0b86a;
+    --amber-dim: rgba(240,184,106,0.12);
+    --blue: #6ab4f0;
+    --blue-dim: rgba(106,180,240,0.1);
+    --teal: #6af0d0;
+    --teal-dim: rgba(106,240,208,0.1);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Layout */
+  .app { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 28px 0;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+  }
+
+  .logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .logo-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+
+  .nav-section {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    color: var(--hint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--accent-dim); color: var(--accent); }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .nav-count {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    opacity: 0.6;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 20px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .sidebar-footer-text {
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.6;
+  }
+
+  /* Main content */
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .topbar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    flex: 1;
+  }
+
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn:hover { border-color: var(--border2); background: var(--surface2); color: var(--text); }
+
+  .btn-accent {
+    background: var(--accent);
+    color: #0e0e0f;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .btn-accent:hover { background: #d4f57a; color: #0e0e0f; }
+
+  /* Stats */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-cell {
+    background: var(--bg);
+    padding: 18px 24px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .stat-value.accent { color: var(--accent); }
+
+  /* Content area */
+  .content { padding: 24px 32px; flex: 1; }
+
+  /* View tabs */
+  .view-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    width: fit-content;
+  }
+
+  .view-tab {
+    padding: 5px 14px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .view-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  /* Pipeline view */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 12px;
+    min-height: 500px;
+  }
+
+  .pipeline-col { }
+
+  .pipeline-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 0 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  .pipeline-col-name {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .pipeline-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--hint);
+    margin-left: auto;
+  }
+
+  .pipeline-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .pipeline-card:hover { border-color: var(--border2); }
+
+  .pipeline-card-company {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .pipeline-card-role {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .pipeline-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* List view */
+  .list-view { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+
+  .list-header {
+    display: grid;
+    grid-template-columns: 200px 140px 100px 80px 1fr 90px;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .list-row {
+    display: grid;
+    grid-template-columns: 200px 140px 100px 80px 1fr 90px;
+    gap: 12px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .list-row:last-child { border-bottom: none; }
+  .list-row:hover { background: var(--surface); }
+  .list-row.selected { background: var(--surface2); }
+
+  .company-cell { display: flex; align-items: center; gap: 10px; }
+
+  .avatar {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .company-name { font-size: 13px; font-weight: 500; }
+  .company-role { font-size: 11px; color: var(--muted); }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .badge-researching { background: var(--blue-dim); color: var(--blue); }
+  .badge-applied { background: rgba(106,240,208,0.08); color: var(--teal); }
+  .badge-screening { background: var(--amber-dim); color: var(--amber); }
+  .badge-hmscreen { background: rgba(208,160,240,0.12); color: #d0a0f0; }
+  .badge-panel { background: var(--accent-dim2); color: var(--accent); }
+  .badge-offer { background: rgba(106,240,106,0.12); color: #6af06a; }
+  .badge-theypassed { background: rgba(136,136,132,0.12); color: var(--muted); }
+  .badge-ipassed { background: var(--red-dim); color: var(--red); }
+
+  .badge-high { background: var(--red-dim); color: var(--red); }
+  .badge-med { background: var(--amber-dim); color: var(--amber); }
+  .badge-low { background: rgba(136,136,132,0.1); color: var(--hint); }
+
+  .next-step-cell {
+    font-size: 12px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .next-step-cell::before {
+    content: '';
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--amber);
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+
+  .date-cell { font-size: 11px; color: var(--hint); font-family: 'DM Mono', monospace; }
+
+  /* Detail panel */
+  .detail-overlay {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 460px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .detail-overlay.open { transform: translateX(0); }
+
+  .detail-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .detail-header-info { flex: 1; }
+
+  .detail-company {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    margin-bottom: 2px;
+  }
+
+  .detail-role { font-size: 13px; color: var(--muted); }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .close-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .detail-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+
+  .detail-section { margin-bottom: 20px; }
+
+  .detail-section-label {
+    font-size: 10px;
+    color: var(--hint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 10px;
+  }
+
+  .detail-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .detail-field { }
+
+  .detail-field-label {
+    font-size: 11px;
+    color: var(--hint);
+    margin-bottom: 3px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .detail-field-val {
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .detail-input, .detail-select, .detail-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .detail-input:focus, .detail-select:focus, .detail-textarea:focus {
+    border-color: var(--border2);
+  }
+
+  .detail-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+  }
+
+  .detail-select option { background: #232327; }
+
+  .detail-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-bg.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 28px;
+    width: 480px;
+    max-width: 90vw;
+  }
+
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; display: block; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .filter-select-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    font-size: 12px;
+    padding: 6px 10px;
+    font-family: 'Instrument Sans', sans-serif;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .filter-select-bar:focus { border-color: var(--border2); color: var(--text); }
+  .filter-select-bar option { background: #232327; }
+
+  .activity-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .pipeline { grid-template-columns: repeat(3, 1fr); }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .list-header, .list-row { grid-template-columns: 160px 120px 90px 1fr; }
+    .list-header > *:nth-child(4), .list-row > *:nth-child(4),
+    .list-header > *:nth-child(6), .list-row > *:nth-child(6) { display: none; }
+    .detail-overlay { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-text">Pipeline</div>
+      <div class="logo-sub">Gavin · Job Search CRM</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Views</div>
+      <button class="nav-item active" onclick="setView('list', this)">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="6.25" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="10.5" width="12" height="1.5" rx="0.75" fill="currentColor"/></svg>
+        List
+        <span class="nav-count" id="nav-count-list">0</span>
+      </button>
+      <button class="nav-item" onclick="setView('pipeline', this)">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="3" height="12" rx="1" fill="currentColor" opacity="0.4"/><rect x="5.5" y="3" width="3" height="8" rx="1" fill="currentColor" opacity="0.7"/><rect x="10" y="5" width="3" height="6" rx="1" fill="currentColor"/></svg>
+        Pipeline
+        <span class="nav-count" id="nav-count-pipeline">0</span>
+      </button>
+    </div>
+
+    <div class="nav-section" style="margin-top:16px">
+      <div class="nav-label">Stages</div>
+      <div id="stage-nav"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-text">
+        Last updated<br>
+        <span id="last-updated" style="color:var(--muted)">—</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="view-title">All Opportunities</div>
+      <div class="topbar-actions">
+        <button class="btn" onclick="exportCSV()">Export CSV</button>
+        <button class="btn-accent btn" onclick="openAddModal()">+ Add opportunity</button>
+      </div>
+    </div>
+
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="content">
+      <div id="view-tabs" class="view-tabs">
+        <button class="view-tab active" onclick="setViewTab('list', this)">List</button>
+        <button class="view-tab" onclick="setViewTab('pipeline', this)">Pipeline</button>
+      </div>
+
+      <div class="filter-bar">
+        <select class="filter-select-bar" id="filterStage" onchange="renderCurrentView()">
+          <option value="">All stages</option>
+          <option>Researching</option><option>Applied</option><option>Screening</option>
+          <option>HM Screen</option><option>Panel</option>
+          <option>Offer</option><option>They Passed</option><option>I Passed</option>
+        </select>
+        <select class="filter-select-bar" id="filterPriority" onchange="renderCurrentView()">
+          <option value="">All priorities</option>
+          <option>High</option><option>Med</option><option>Low</option>
+        </select>
+        <select class="filter-select-bar" id="filterSort" onchange="renderCurrentView()">
+          <option value="stage">Sort: Stage</option>
+          <option value="priority">Sort: Priority</option>
+          <option value="company">Sort: Company</option>
+          <option value="date">Sort: Last activity</option>
+        </select>
+      </div>
+
+      <div id="list-view"></div>
+      <div id="pipeline-view" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Panel -->
+<div class="detail-overlay" id="detailPanel">
+  <div class="detail-header">
+    <div class="detail-header-info">
+      <div class="detail-company" id="dp-company"></div>
+      <div class="detail-role" id="dp-role"></div>
+    </div>
+    <button class="close-btn" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <div class="detail-section-label">Status</div>
+      <div class="detail-fields">
+        <div class="detail-field">
+          <div class="detail-field-label">Stage</div>
+          <select class="detail-select" id="dp-stage" onchange="updateField('stage', this.value)">
+            <option>Researching</option><option>Applied</option><option>Screening</option>
+            <option>HM Screen</option><option>Panel</option>
+            <option>Offer</option><option>They Passed</option><option>I Passed</option>
+          </select>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Priority</div>
+          <select class="detail-select" id="dp-priority" onchange="updateField('priority', this.value)">
+            <option>High</option><option>Med</option><option>Low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Role details</div>
+      <div class="detail-fields">
+        <div class="detail-field">
+          <div class="detail-field-label">OTE range</div>
+          <input class="detail-input" id="dp-ote" placeholder="e.g. $250K–$1M" onblur="updateField('ote', this.value)">
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Remote policy</div>
+          <input class="detail-input" id="dp-remote" placeholder="Remote / Hybrid / Onsite" onblur="updateField('remote', this.value)">
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Source</div>
+          <input class="detail-input" id="dp-source" placeholder="Recruiter / Self-sourced" onblur="updateField('source', this.value)">
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Contact</div>
+          <input class="detail-input" id="dp-contact" placeholder="Name / status" onblur="updateField('contact', this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Next step</div>
+      <input class="detail-input" id="dp-nextStep" placeholder="What needs to happen next?" onblur="updateField('nextStep', this.value)" style="width:100%">
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Notes & research</div>
+      <textarea class="detail-textarea" id="dp-notes" placeholder="Company research, impressions, red flags, comp notes..." onblur="updateField('notes', this.value)" style="min-height:120px"></textarea>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Interview prep</div>
+      <textarea class="detail-textarea" id="dp-prep" placeholder="Stories to use, questions to ask, key personas, deal examples..." onblur="updateField('prep', this.value)"></textarea>
+    </div>
+  </div>
+  <div class="detail-footer">
+    <button class="btn-accent btn" style="font-size:12px" onclick="removeOpp()">Remove opportunity</button>
+    <div style="flex:1"></div>
+    <div style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;align-self:center" id="dp-lastmod"></div>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal-bg" id="addModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">New opportunity</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Company</label>
+        <input class="detail-input" id="new-company" placeholder="Company name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <input class="detail-input" id="new-role" placeholder="e.g. Enterprise AE" value="Enterprise AE">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Stage</label>
+        <select class="detail-select" id="new-stage">
+          <option>Researching</option><option>Applied</option><option>Screening</option>
+          <option>HM Screen</option><option>Panel</option><option>Offer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Priority</label>
+        <select class="detail-select" id="new-priority">
+          <option>High</option><option selected>Med</option><option>Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">OTE range</label>
+        <input class="detail-input" id="new-ote" placeholder="$250K–$1M">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Source</label>
+        <input class="detail-input" id="new-source" placeholder="Recruiter / Self-sourced">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="detail-textarea" id="new-notes" placeholder="Initial thoughts..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAddModal()">Cancel</button>
+      <button class="btn-accent btn" onclick="addOpp()">Add opportunity</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STAGE_ORDER = ['Offer','Panel','HM Screen','Screening','Applied','Researching','They Passed','I Passed'];
+const PRIORITY_ORDER = ['High','Med','Low'];
+const STAGE_COLORS = {
+  Researching:   { dot: '#6ab4f0', cls: 'badge-researching' },
+  Applied:       { dot: '#6af0d0', cls: 'badge-applied' },
+  Screening:     { dot: '#f0b86a', cls: 'badge-screening' },
+  'HM Screen':   { dot: '#d0a0f0', cls: 'badge-hmscreen' },
+  Panel:         { dot: '#c8f06a', cls: 'badge-panel' },
+  Offer:         { dot: '#6af06a', cls: 'badge-offer' },
+  'They Passed': { dot: '#888884', cls: 'badge-theypassed' },
+  'I Passed':    { dot: '#f07070', cls: 'badge-ipassed' },
+};
+const PRIORITY_CLS = { High: 'badge-high', Med: 'badge-med', Low: 'badge-low' };
+
+const AVATAR_COLORS = [
+  { bg: '#1a2a1a', color: '#6af06a' },
+  { bg: '#1a1a2a', color: '#6ab4f0' },
+  { bg: '#2a1a1a', color: '#f07070' },
+  { bg: '#2a2a1a', color: '#f0b86a' },
+  { bg: '#1a2a2a', color: '#6af0d0' },
+  { bg: '#2a1a2a', color: '#d0a0f0' },
+];
+
+function getAvatarColor(company) {
+  let h = 0;
+  for (let i = 0; i < company.length; i++) h = (h * 31 + company.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+
+function initials(company) {
+  return company.replace(/[^A-Za-z0-9 ]/g, '').split(' ').filter(Boolean).map(w => w[0].toUpperCase()).slice(0,2).join('') || '??';
+}
+
+function today() {
+  return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+const STORAGE_KEY = 'pipeline_crm_v2';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ opps, meta: { lastUpdated: new Date().toISOString() } }));
+  document.getElementById('last-updated').textContent = today();
+}
+
+let opps = [];
+let selectedId = null;
+let currentView = 'list';
+let nextId = 100;
+
+const STAGE_MIGRATE = {
+  'Interviewing': 'Panel',
+  'Passed': 'They Passed',
+};
+
+function migrateStage(stage) {
+  return STAGE_MIGRATE[stage] || (STAGE_COLORS[stage] ? stage : 'Researching');
+}
+
+function initOpps() {
+  const saved = loadData();
+  if (saved && saved.opps && saved.opps.length > 0) {
+    opps = saved.opps.map(o => ({ ...o, stage: migrateStage(o.stage) }));
+    nextId = Math.max(...opps.map(o => o.id)) + 1;
+    if (saved.meta && saved.meta.lastUpdated) {
+      const d = new Date(saved.meta.lastUpdated);
+      document.getElementById('last-updated').textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  } else {
+    opps = [
+      { id:1, company:'Modular', role:'Enterprise AE', stage:'Researching', priority:'High', ote:'$250K–$500K', remote:'Remote-friendly', source:'Recruiter', contact:'', lastActivity:'Mar 18', nextStep:'Research GTM motion + ICP fit', notes:'AI infrastructure / developer tools. Max Howell (Homebrew creator) founded. Strong eng brand. Evaluate sales maturity and enterprise motion.', prep:'' },
+      { id:2, company:'Decagon', role:'Enterprise AE', stage:'Screening', priority:'High', ote:'$250K–$1M', remote:'Remote', source:'Inbound', contact:'Recruiter call scheduled', lastActivity:'Mar 19', nextStep:'Prep recruiter call — MEDDPICC angles + "why Decagon" narrative', notes:'AI customer support automation. Strong customer logos. Evaluate stage of enterprise motion and comp structure.', prep:'Proof points: deal velocity at Braze, CX buyer experience. Questions: quota attainment, enterprise vs. mid-market split, territory?' },
+      { id:3, company:'OpenRouter', role:'Enterprise AE', stage:'Researching', priority:'Med', ote:'TBD', remote:'Unknown', source:'Self-sourced', contact:'', lastActivity:'Mar 15', nextStep:'Dig into enterprise vs. PLG split — is there a real AE motion?', notes:'LLM routing/aggregation layer. Interesting infrastructure play. Unclear if enterprise sales motion is mature enough for a dedicated AE.', prep:'' },
+      { id:4, company:'Profound', role:'Enterprise AE', stage:'Researching', priority:'Med', ote:'$100K–$500K', remote:'Hybrid', source:'Recruiter', contact:'', lastActivity:'Mar 16', nextStep:'Validate revenue claims + funding story before investing more time', notes:'AI search / brand visibility for LLMs. Novel category. Need to pressure-test how real enterprise demand is vs. PLG.', prep:'' },
+      { id:5, company:'TechWolf', role:'Enterprise AE', stage:'Panel', priority:'High', ote:'$250K–$750K', remote:'Remote', source:'Recruiter', contact:'Hiring Manager intro done', lastActivity:'Mar 20', nextStep:'Prep panel presentation — sales philosophy + 30/60/90 plan', notes:'AI skills intelligence. Strong HR/L&D buyer motion. Comp structure unclear — push on OTE split and equity.', prep:'Theme: product fluency over methodology theater. Deal story: $400K Braze expansion — discovery depth, multi-threading. 30/60/90: ramp → first pipeline → territory plan.' },
+    ];
+    nextId = 6;
+    saveData();
+  }
+}
+
+function getFiltered() {
+  const stage = document.getElementById('filterStage').value;
+  const priority = document.getElementById('filterPriority').value;
+  const sort = document.getElementById('filterSort').value;
+  let list = opps.filter(o =>
+    (!stage || o.stage === stage) &&
+    (!priority || o.priority === priority)
+  );
+  if (sort === 'stage') list.sort((a,b) => STAGE_ORDER.indexOf(a.stage) - STAGE_ORDER.indexOf(b.stage));
+  else if (sort === 'priority') list.sort((a,b) => PRIORITY_ORDER.indexOf(a.priority) - PRIORITY_ORDER.indexOf(b.priority));
+  else if (sort === 'company') list.sort((a,b) => a.company.localeCompare(b.company));
+  else if (sort === 'date') list.sort((a,b) => a.lastActivity > b.lastActivity ? -1 : 1);
+  return list;
+}
+
+function renderStats() {
+  const CLOSED_STAGES = ['They Passed','I Passed'];
+  const active = opps.filter(o => !CLOSED_STAGES.includes(o.stage)).length;
+  const inProgress = opps.filter(o => ['Screening','HM Screen','Panel','Offer'].includes(o.stage)).length;
+  const high = opps.filter(o => o.priority === 'High' && !CLOSED_STAGES.includes(o.stage)).length;
+  const total = opps.length;
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-cell"><div class="stat-label">Total</div><div class="stat-value">${total}</div></div>
+    <div class="stat-cell"><div class="stat-label">Active</div><div class="stat-value">${active}</div></div>
+    <div class="stat-cell"><div class="stat-label">In process</div><div class="stat-value accent">${inProgress}</div></div>
+    <div class="stat-cell"><div class="stat-label">High priority</div><div class="stat-value">${high}</div></div>
+    <div class="stat-cell"><div class="stat-label">Closed</div><div class="stat-value" style="color:var(--hint)">${opps.filter(o=>CLOSED_STAGES.includes(o.stage)).length}</div></div>
+  `;
+
+  document.getElementById('nav-count-list').textContent = active;
+  document.getElementById('nav-count-pipeline').textContent = active;
+
+  const stageCounts = {};
+  STAGE_ORDER.forEach(s => stageCounts[s] = opps.filter(o => o.stage === s).length);
+  document.getElementById('stage-nav').innerHTML = STAGE_ORDER.map(s => `
+    <button class="nav-item" onclick="filterByStage('${s}')" style="font-size:12px">
+      <span style="width:6px;height:6px;border-radius:50%;background:${STAGE_COLORS[s].dot};flex-shrink:0;display:inline-block"></span>
+      ${s}
+      <span class="nav-count">${stageCounts[s]}</span>
+    </button>
+  `).join('');
+}
+
+function filterByStage(stage) {
+  document.getElementById('filterStage').value = stage;
+  renderCurrentView();
+}
+
+function renderListView() {
+  const list = getFiltered();
+  if (list.length === 0) {
+    document.getElementById('list-view').innerHTML = '<div style="padding:40px;text-align:center;color:var(--hint);font-size:13px">No opportunities match the current filters.</div>';
+    return;
+  }
+  document.getElementById('list-view').innerHTML = `
+    <div class="list-view">
+      <div class="list-header">
+        <div>Company</div><div>Stage</div><div>Priority</div><div>OTE</div><div>Next step</div><div>Last activity</div>
+      </div>
+      ${list.map(o => {
+        const av = getAvatarColor(o.company);
+        return `<div class="list-row ${selectedId===o.id?'selected':''}" onclick="openDetail(${o.id})">
+          <div class="company-cell">
+            <div class="avatar" style="background:${av.bg};color:${av.color}">${initials(o.company)}</div>
+            <div><div class="company-name">${o.company}</div><div class="company-role">${o.role}</div></div>
+          </div>
+          <div><span class="badge ${(STAGE_COLORS[o.stage]||STAGE_COLORS['Researching']).cls}">${o.stage}</span></div>
+          <div><span class="badge ${PRIORITY_CLS[o.priority]}">${o.priority}</span></div>
+          <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">${o.ote || '—'}</div>
+          <div class="next-step-cell">${o.nextStep || '—'}</div>
+          <div class="date-cell">${o.lastActivity || '—'}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderPipelineView() {
+  const all = getFiltered();
+  document.getElementById('pipeline-view').innerHTML = `
+    <div class="pipeline">
+      ${STAGE_ORDER.map(stage => {
+        const cards = all.filter(o => o.stage === stage);
+        const sc = STAGE_COLORS[stage] || STAGE_COLORS['Researching'];
+        return `<div class="pipeline-col">
+          <div class="pipeline-header">
+            <span style="width:6px;height:6px;border-radius:50%;background:${sc.dot};display:inline-block;flex-shrink:0"></span>
+            <span class="pipeline-col-name">${stage}</span>
+            <span class="pipeline-count">${cards.length}</span>
+          </div>
+          ${cards.map(o => {
+            const av = getAvatarColor(o.company);
+            return `<div class="pipeline-card" onclick="openDetail(${o.id})">
+              <div class="pipeline-card-company">${o.company}</div>
+              <div class="pipeline-card-role">${o.role}</div>
+              <div class="pipeline-card-footer">
+                <span class="badge ${PRIORITY_CLS[o.priority]}" style="font-size:10px">${o.priority}</span>
+                <span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace">${o.ote||'—'}</span>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderCurrentView() {
+  renderStats();
+  if (currentView === 'list') renderListView();
+  else renderPipelineView();
+}
+
+function setView(view, btn) {
+  currentView = view;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const lv = document.getElementById('list-view');
+  const pv = document.getElementById('pipeline-view');
+  const vtabs = document.querySelectorAll('.view-tab');
+  if (view === 'list') {
+    lv.style.display = ''; pv.style.display = 'none';
+    vtabs[0].classList.add('active'); vtabs[1].classList.remove('active');
+  } else {
+    lv.style.display = 'none'; pv.style.display = '';
+    vtabs[1].classList.add('active'); vtabs[0].classList.remove('active');
+  }
+  renderCurrentView();
+}
+
+function setViewTab(view, btn) {
+  currentView = view;
+  document.querySelectorAll('.view-tab').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+  const lv = document.getElementById('list-view');
+  const pv = document.getElementById('pipeline-view');
+  if (view === 'list') { lv.style.display = ''; pv.style.display = 'none'; renderListView(); }
+  else { lv.style.display = 'none'; pv.style.display = ''; renderPipelineView(); }
+}
+
+function openDetail(id) {
+  const o = opps.find(x => x.id === id);
+  if (!o) return;
+  selectedId = id;
+  document.getElementById('dp-company').textContent = o.company;
+  document.getElementById('dp-role').textContent = o.role;
+  document.getElementById('dp-stage').value = o.stage;
+  document.getElementById('dp-priority').value = o.priority;
+  document.getElementById('dp-ote').value = o.ote || '';
+  document.getElementById('dp-remote').value = o.remote || '';
+  document.getElementById('dp-source').value = o.source || '';
+  document.getElementById('dp-contact').value = o.contact || '';
+  document.getElementById('dp-nextStep').value = o.nextStep || '';
+  document.getElementById('dp-notes').value = o.notes || '';
+  document.getElementById('dp-prep').value = o.prep || '';
+  document.getElementById('dp-lastmod').textContent = 'Updated ' + (o.lastActivity || today());
+  document.getElementById('detailPanel').classList.add('open');
+  renderCurrentView();
+}
+
+function closeDetail() {
+  selectedId = null;
+  document.getElementById('detailPanel').classList.remove('open');
+  renderCurrentView();
+}
+
+function updateField(field, value) {
+  const o = opps.find(x => x.id === selectedId);
+  if (!o) return;
+  o[field] = value;
+  o.lastActivity = today();
+  document.getElementById('dp-lastmod').textContent = 'Updated ' + today();
+  saveData();
+  renderCurrentView();
+}
+
+function removeOpp() {
+  if (!selectedId) return;
+  const o = opps.find(x => x.id === selectedId);
+  if (!o || !confirm(`Remove ${o.company} from your pipeline?`)) return;
+  opps = opps.filter(x => x.id !== selectedId);
+  selectedId = null;
+  saveData();
+  closeDetail();
+}
+
+function openAddModal() {
+  document.getElementById('addModal').classList.add('open');
+  document.getElementById('new-company').focus();
+}
+
+function closeAddModal() {
+  document.getElementById('addModal').classList.remove('open');
+  ['new-company','new-role','new-ote','new-source','new-notes'].forEach(id => document.getElementById(id).value = id === 'new-role' ? 'Enterprise AE' : '');
+  document.getElementById('new-stage').value = 'Researching';
+  document.getElementById('new-priority').value = 'Med';
+}
+
+function addOpp() {
+  const company = document.getElementById('new-company').value.trim();
+  if (!company) { document.getElementById('new-company').focus(); return; }
+  const o = {
+    id: nextId++,
+    company,
+    role: document.getElementById('new-role').value || 'Enterprise AE',
+    stage: document.getElementById('new-stage').value,
+    priority: document.getElementById('new-priority').value,
+    ote: document.getElementById('new-ote').value,
+    remote: '',
+    source: document.getElementById('new-source').value,
+    contact: '',
+    lastActivity: today(),
+    nextStep: '',
+    notes: document.getElementById('new-notes').value,
+    prep: ''
+  };
+  opps.unshift(o);
+  saveData();
+  closeAddModal();
+  renderCurrentView();
+  setTimeout(() => openDetail(o.id), 100);
+}
+
+function exportCSV() {
+  const headers = ['Company','Role','Stage','Priority','OTE','Remote','Source','Contact','Last Activity','Next Step','Notes'];
+  const rows = opps.map(o => [o.company,o.role,o.stage,o.priority,o.ote||'',o.remote||'',o.source||'',o.contact||'',o.lastActivity||'',o.nextStep||'',o.notes||''].map(v => `"${String(v).replace(/"/g,'""')}"`));
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'job-search-pipeline-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+document.getElementById('addModal').addEventListener('click', closeAddModal);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDetail(); closeAddModal(); }
+  if ((e.key === 'n') && !e.target.matches('input,textarea,select')) openAddModal();
+});
+
+initOpps();
+renderCurrentView();
+</script>
+</body>
+</html>
