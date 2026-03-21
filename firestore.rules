@@ -1,0 +1,18 @@
+rules_version = '2';
+// TEMPORARY — local / dev only. Anyone on the internet can read and change this data
+// if they know your project + these collection names. Replace with locked rules
+// (see AUTH-PRIVATE.md) before sharing the app URL or shipping.
+//
+// Deploy from this folder:
+//   firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /opportunities/{docId} {
+      allow read, write: if true;
+    }
+    match /jobFeed/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
