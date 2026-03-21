@@ -274,7 +274,7 @@ function renderStats(){
   document.getElementById('nav-count-pipeline').textContent=active;
   const sc={};STAGE_ORDER.forEach(s=>sc[s]=opps.filter(o=>o.stage===s).length);
   document.getElementById('stage-nav').innerHTML=STAGE_ORDER.map(s=>
-    '<button class="nav-item" onclick="filterByStage(''+s+'')" style="font-size:12px">'+
+    '<button class="nav-item" onclick="filterByStage(this.getAttribute('data-s'))" data-s="'+s+'" style="font-size:12px">'+
     '<span style="width:6px;height:6px;border-radius:50%;background:'+STAGE_COLORS[s].dot+';flex-shrink:0;display:inline-block"></span> '+
     s+'<span class="nav-count">'+sc[s]+'</span></button>'
   ).join('');
@@ -287,7 +287,7 @@ function renderListView(){
   document.getElementById('list-view').innerHTML='<div class="list-view"><div class="list-header"><div>Company</div><div>Stage</div><div>Priority</div><div>OTE</div><div>Next step</div><div>Last activity</div></div>'+
     list.map(o=>{
       const av=getAvatarColor(o.company),sid=o.firestoreId||String(o.id);
-      return '<div class="list-row '+(selectedId===sid?'selected':'')+'" onclick="openDetail(''+sid+'')">'+
+      return '<div class="list-row '+(selectedId===sid?'selected':'')+'" onclick="openDetail(this.getAttribute('data-sid'))" data-sid="'+sid+'">'+
         '<div class="company-cell"><div class="avatar" style="background:'+av.bg+';color:'+av.color+'">'+initials(o.company)+'</div>'+
         '<div><div class="company-name">'+o.company+'</div><div class="company-role">'+o.role+'</div></div></div>'+
         '<div><span class="badge '+(STAGE_COLORS[o.stage]||STAGE_COLORS.Researching).cls+'">'+o.stage+'</span></div>'+
@@ -308,7 +308,7 @@ function renderPipelineView(){
         '<span class="pipeline-col-name">'+stage+'</span><span class="pipeline-count">'+cards.length+'</span></div>'+
         cards.map(o=>{
           const sid=o.firestoreId||String(o.id);
-          return '<div class="pipeline-card" onclick="openDetail(''+sid+'')">'+
+          return '<div class="pipeline-card" onclick="openDetail(this.getAttribute('data-sid'))" data-sid="'+sid+'">'+
             '<div class="pipeline-card-company">'+o.company+'</div>'+
             '<div class="pipeline-card-role">'+o.role+'</div>'+
             '<div class="pipeline-card-footer"><span class="badge '+PRIORITY_CLS[o.priority]+'" style="font-size:10px">'+o.priority+'</span>'+
