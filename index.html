@@ -153,7 +153,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 <div class="detail-section"><div class="detail-section-label">Notes &amp; research</div><textarea class="detail-textarea" id="dp-notes" placeholder="Company research, impressions, red flags, comp notes..." onblur="updateField('notes',this.value)" style="min-height:120px"></textarea></div>
 <div class="detail-section"><div class="detail-section-label">Interview prep</div><textarea class="detail-textarea" id="dp-prep" placeholder="Stories to use, questions to ask, key personas..." onblur="updateField('prep',this.value)"></textarea></div>
 </div>
-<div class="detail-footer"><button class="btn-accent btn" style="font-size:12px;background:var(--red);border-color:var(--red);color:#fff" onclick="removeOpp()">Remove opportunity</button><div style="flex:1"></div><div style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;align-self:center" id="dp-lastmod"></div></div>
+<div class="detail-footer"><button class="btn-accent btn" style="font-size:12px;background:var(--red);border-color:var(--red);color:#fff" onclick="removeOpp()">Remove opportunity</button><div style="flex:1"></div><div style="font-size:11px;color:var(--hint);font-family:monospace;align-self:center" id="dp-lastmod"></div></div>
 </div>
 <div class="modal-bg" id="addModal">
 <div class="modal" onclick="event.stopPropagation()">
@@ -292,7 +292,7 @@ function renderListView(){
         '<div><div class="company-name">'+o.company+'</div><div class="company-role">'+o.role+'</div></div></div>'+
         '<div><span class="badge '+(STAGE_COLORS[o.stage]||STAGE_COLORS.Researching).cls+'">'+o.stage+'</span></div>'+
         '<div><span class="badge '+PRIORITY_CLS[o.priority]+'">'+o.priority+'</span></div>'+
-        '<div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">'+(o.ote||'—')+'</div>'+
+        '<div style="font-size:12px;color:var(--muted);font-family:monospace">'+(o.ote||'—')+'</div>'+
         '<div class="next-step-cell">'+(o.nextStep||'—')+'</div>'+
         '<div class="date-cell">'+(o.lastActivity||'—')+'</div></div>';
     }).join('')+'</div>';
@@ -312,7 +312,7 @@ function renderPipelineView(){
             '<div class="pipeline-card-company">'+o.company+'</div>'+
             '<div class="pipeline-card-role">'+o.role+'</div>'+
             '<div class="pipeline-card-footer"><span class="badge '+PRIORITY_CLS[o.priority]+'" style="font-size:10px">'+o.priority+'</span>'+
-            '<span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace">'+(o.ote||'—')+'</span></div></div>';
+            '<span style="font-size:11px;color:var(--hint);font-family:monospace">'+(o.ote||'—')+'</span></div></div>';
         }).join('')+'</div>';
     }).join('')+'</div>';
 }
