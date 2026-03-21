@@ -5,11 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Search CRM</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
-:root{--bg:#0e0e0f;--surface:#18181b;--surface2:#232327;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#f0ede8;--muted:#888884;--hint:#555552;--accent:#c8f06a;--accent-dim:rgba(200,240,106,0.1);--accent-dim2:rgba(200,240,106,0.18);--red:#f07070;--red-dim:rgba(240,112,112,0.1);--amber:#f0b86a;--amber-dim:rgba(240,184,106,0.12);--blue:#6ab4f0;--blue-dim:rgba(106,180,240,0.1);--teal:#6af0d0;--teal-dim:rgba(106,240,208,0.1);--radius:10px;--radius-sm:6px}
+:root{--bg:#0e0e0f;--surface:#18181b;--surface2:#232327;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#f0ede8;--muted:#888884;--hint:#555552;--accent:#c8f06a;--accent-dim:rgba(200,240,106,0.1);--accent-dim2:rgba(200,240,106,0.18);--red:#f07070;--red-dim:rgba(240,112,112,0.1);--amber:#f0b86a;--amber-dim:rgba(240,184,106,0.12);--blue:#6ab4f0;--blue-dim:rgba(106,180,240,0.1);--teal:#6af0d0;--radius:10px;--radius-sm:6px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
 .app{display:flex;min-height:100vh}
@@ -22,7 +21,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 .nav-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--radius-sm);cursor:pointer;color:var(--muted);font-size:13px;transition:all 0.15s;border:none;background:none;width:100%;text-align:left}
 .nav-item:hover{background:var(--surface2);color:var(--text)}
 .nav-item.active{background:var(--accent-dim);color:var(--accent)}
-.nav-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .nav-count{margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;opacity:0.6}
 .sidebar-footer{margin-top:auto;padding:16px 20px 0;border-top:1px solid var(--border)}
 .sidebar-footer-text{font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;line-height:1.6}
@@ -31,7 +29,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 .topbar-title{font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:-0.02em;flex:1}
 .topbar-actions{display:flex;gap:8px;align-items:center}
 .btn{padding:7px 14px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--muted);font-size:13px;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.15s;white-space:nowrap}
-.btn:hover{border-color:var(--border2);background:var(--surface2);color:var(--text)}
+.btn:hover{background:var(--surface2);color:var(--text)}
 .btn-accent{background:var(--accent);color:#0e0e0f;border-color:var(--accent);font-weight:600}
 .btn-accent:hover{background:#d4f57a;color:#0e0e0f}
 .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
@@ -52,7 +50,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 .pipeline-card-company{font-size:13px;font-weight:600;margin-bottom:2px}
 .pipeline-card-role{font-size:11px;color:var(--muted);margin-bottom:8px}
 .pipeline-card-footer{display:flex;align-items:center;justify-content:space-between}
-.list-view{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.list-view{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .list-header{display:grid;grid-template-columns:200px 140px 100px 80px 1fr 90px;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase}
 .list-row{display:grid;grid-template-columns:200px 140px 100px 80px 1fr 90px;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background 0.1s}
 .list-row:last-child{border-bottom:none}
@@ -90,7 +88,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 .detail-section-label{font-size:10px;color:var(--hint);letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:10px}
 .detail-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .detail-field-label{font-size:11px;color:var(--hint);margin-bottom:3px;font-family:'DM Mono',monospace}
-.detail-field-val{font-size:13px;color:var(--text)}
 .detail-input,.detail-select,.detail-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:13px;padding:7px 10px;outline:none;transition:border-color 0.15s}
 .detail-input:focus,.detail-select:focus,.detail-textarea:focus{border-color:var(--border2)}
 .detail-textarea{resize:vertical;min-height:80px;line-height:1.6}
@@ -105,8 +102,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
 .filter-bar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
-.filter-select-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted);font-size:12px;padding:6px 10px;font-family:'Instrument Sans',sans-serif;outline:none;cursor:pointer;transition:border-color 0.15s}
-.filter-select-bar:focus{border-color:var(--border2);color:var(--text)}
+.filter-select-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted);font-size:12px;padding:6px 10px;font-family:'Instrument Sans',sans-serif;outline:none;cursor:pointer}
 .filter-select-bar option{background:#232327}
 .sync-status{font-size:11px;font-family:'DM Mono',monospace;color:var(--hint);padding:4px 10px;border-radius:4px;background:var(--surface)}
 ::-webkit-scrollbar{width:6px}
@@ -117,190 +113,60 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 </head><body>
 <div class="app">
 <aside class="sidebar">
-  <div class="logo">
-    <div class="logo-text">Pipeline</div>
-    <div class="logo-sub">Gavin · Job Search CRM</div>
-  </div>
-  <div class="nav-section">
-    <div class="nav-label">Views</div>
-    <button class="nav-item active" onclick="setView('list',this)">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="6.25" width="12" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="10.5" width="12" height="1.5" rx=".75" fill="currentColor"/></svg>
-      List <span class="nav-count" id="nav-count-list">0</span>
-    </button>
-    <button class="nav-item" onclick="setView('pipeline',this)">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="3" height="12" rx="1" fill="currentColor" opacity=".4"/><rect x="5.5" y="3" width="3" height="8" rx="1" fill="currentColor" opacity=".7"/><rect x="10" y="5" width="3" height="6" rx="1" fill="currentColor"/></svg>
-      Pipeline <span class="nav-count" id="nav-count-pipeline">0</span>
-    </button>
-  </div>
-  <div class="nav-section" style="margin-top:16px">
-    <div class="nav-label">Stages</div>
-    <div id="stage-nav"></div>
-  </div>
-  <div class="sidebar-footer">
-    <div class="sidebar-footer-text">
-      Last updated<br>
-      <span id="last-updated" style="color:var(--muted)">—</span>
-    </div>
-  </div>
+<div class="logo"><div class="logo-text">Pipeline</div><div class="logo-sub">Gavin &middot; Job Search CRM</div></div>
+<div class="nav-section">
+<div class="nav-label">Views</div>
+<button class="nav-item active" onclick="setView('list',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="6.25" width="12" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="10.5" width="12" height="1.5" rx=".75" fill="currentColor"/></svg> List <span class="nav-count" id="nav-count-list">0</span></button>
+<button class="nav-item" onclick="setView('pipeline',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="3" height="12" rx="1" fill="currentColor" opacity=".4"/><rect x="5.5" y="3" width="3" height="8" rx="1" fill="currentColor" opacity=".7"/><rect x="10" y="5" width="3" height="6" rx="1" fill="currentColor"/></svg> Pipeline <span class="nav-count" id="nav-count-pipeline">0</span></button>
+</div>
+<div class="nav-section" style="margin-top:16px"><div class="nav-label">Stages</div><div id="stage-nav"></div></div>
+<div class="sidebar-footer"><div class="sidebar-footer-text">Last updated<br><span id="last-updated" style="color:var(--muted)">&#8212;</span></div></div>
 </aside>
 <div class="main">
-  <div class="topbar">
-    <div class="topbar-title" id="view-title">All Opportunities</div>
-    <div class="topbar-actions">
-      <span class="sync-status" id="sync-status">Loading…</span>
-      <button class="btn" onclick="exportCSV()">Export CSV</button>
-      <button class="btn-accent btn" onclick="openAddModal()">+ Add opportunity</button>
-    </div>
-  </div>
-  <div class="stats-row" id="stats-row"></div>
-  <div class="content">
-    <div id="view-tabs" class="view-tabs">
-      <button class="view-tab active" onclick="setViewTab('list',this)">List</button>
-      <button class="view-tab" onclick="setViewTab('pipeline',this)">Pipeline</button>
-    </div>
-    <div class="filter-bar">
-      <select class="filter-select-bar" id="filterStage" onchange="renderCurrentView()">
-        <option value="">All stages</option>
-        <option>Researching</option><option>Applied</option><option>Screening</option>
-        <option>HM Screen</option><option>Panel</option><option>Offer</option>
-        <option>They Passed</option><option>I Passed</option>
-      </select>
-      <select class="filter-select-bar" id="filterPriority" onchange="renderCurrentView()">
-        <option value="">All priorities</option>
-        <option>High</option><option>Med</option><option>Low</option>
-      </select>
-      <select class="filter-select-bar" id="filterSort" onchange="renderCurrentView()">
-        <option value="stage">Sort: Stage</option>
-        <option value="priority">Sort: Priority</option>
-        <option value="company">Sort: Company</option>
-        <option value="date">Sort: Last activity</option>
-      </select>
-    </div>
-    <div id="list-view"></div>
-    <div id="pipeline-view" style="display:none"></div>
-  </div>
+<div class="topbar">
+<div class="topbar-title" id="view-title">All Opportunities</div>
+<div class="topbar-actions">
+<span class="sync-status" id="sync-status">Loading&hellip;</span>
+<button class="btn" onclick="exportCSV()">Export CSV</button>
+<button class="btn-accent btn" onclick="openAddModal()">+ Add opportunity</button>
 </div>
 </div>
-<!-- Detail Panel -->
+<div class="stats-row" id="stats-row"></div>
+<div class="content">
+<div class="view-tabs"><button class="view-tab active" onclick="setViewTab('list',this)">List</button><button class="view-tab" onclick="setViewTab('pipeline',this)">Pipeline</button></div>
+<div class="filter-bar">
+<select class="filter-select-bar" id="filterStage" onchange="renderCurrentView()"><option value="">All stages</option><option>Researching</option><option>Applied</option><option>Screening</option><option>HM Screen</option><option>Panel</option><option>Offer</option><option>They Passed</option><option>I Passed</option></select>
+<select class="filter-select-bar" id="filterPriority" onchange="renderCurrentView()"><option value="">All priorities</option><option>High</option><option>Med</option><option>Low</option></select>
+<select class="filter-select-bar" id="filterSort" onchange="renderCurrentView()"><option value="stage">Sort: Stage</option><option value="priority">Sort: Priority</option><option value="company">Sort: Company</option><option value="date">Sort: Last activity</option></select>
+</div>
+<div id="list-view"></div>
+<div id="pipeline-view" style="display:none"></div>
+</div>
+</div>
+</div>
 <div class="detail-overlay" id="detailPanel">
-  <div class="detail-header">
-    <div class="detail-header-info">
-      <div class="detail-company" id="dp-company"></div>
-      <div class="detail-role" id="dp-role"></div>
-    </div>
-    <button class="close-btn" onclick="closeDetail()">✕</button>
-  </div>
-  <div class="detail-body">
-    <div class="detail-section">
-      <div class="detail-section-label">Status</div>
-      <div class="detail-fields">
-        <div class="detail-field">
-          <div class="detail-field-label">Stage</div>
-          <select class="detail-select" id="dp-stage" onchange="updateField('stage',this.value)">
-            <option>Researching</option><option>Applied</option><option>Screening</option>
-            <option>HM Screen</option><option>Panel</option><option>Offer</option>
-            <option>They Passed</option><option>I Passed</option>
-          </select>
-        </div>
-        <div class="detail-field">
-          <div class="detail-field-label">Priority</div>
-          <select class="detail-select" id="dp-priority" onchange="updateField('priority',this.value)">
-            <option>High</option><option>Med</option><option>Low</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-section-label">Role details</div>
-      <div class="detail-fields">
-        <div class="detail-field">
-          <div class="detail-field-label">OTE range</div>
-          <input class="detail-input" id="dp-ote" placeholder="e.g. $250K–$1M" onblur="updateField('ote',this.value)">
-        </div>
-        <div class="detail-field">
-          <div class="detail-field-label">Remote policy</div>
-          <input class="detail-input" id="dp-remote" placeholder="Remote / Hybrid / Onsite" onblur="updateField('remote',this.value)">
-        </div>
-        <div class="detail-field">
-          <div class="detail-field-label">Source</div>
-          <input class="detail-input" id="dp-source" placeholder="Recruiter / Self-sourced" onblur="updateField('source',this.value)">
-        </div>
-        <div class="detail-field">
-          <div class="detail-field-label">Contact</div>
-          <input class="detail-input" id="dp-contact" placeholder="Name / status" onblur="updateField('contact',this.value)">
-        </div>
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-section-label">Next step</div>
-      <input class="detail-input" id="dp-nextStep" placeholder="What needs to happen next?" onblur="updateField('nextStep',this.value)" style="width:100%">
-    </div>
-    <div class="detail-section">
-      <div class="detail-section-label">Notes &amp; research</div>
-      <textarea class="detail-textarea" id="dp-notes" placeholder="Company research, impressions, red flags, comp notes..." onblur="updateField('notes',this.value)" style="min-height:120px"></textarea>
-    </div>
-    <div class="detail-section">
-      <div class="detail-section-label">Interview prep</div>
-      <textarea class="detail-textarea" id="dp-prep" placeholder="Stories to use, questions to ask, key personas, deal examples..." onblur="updateField('prep',this.value)"></textarea>
-    </div>
-  </div>
-  <div class="detail-footer">
-    <button class="btn-accent btn" style="font-size:12px;background:var(--red);border-color:var(--red);color:#fff" onclick="removeOpp()">Remove opportunity</button>
-    <div style="flex:1"></div>
-    <div style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;align-self:center" id="dp-lastmod"></div>
-  </div>
+<div class="detail-header"><div class="detail-header-info"><div class="detail-company" id="dp-company"></div><div class="detail-role" id="dp-role"></div></div><button class="close-btn" onclick="closeDetail()">&#x2715;</button></div>
+<div class="detail-body">
+<div class="detail-section"><div class="detail-section-label">Status</div><div class="detail-fields"><div class="detail-field"><div class="detail-field-label">Stage</div><select class="detail-select" id="dp-stage" onchange="updateField('stage',this.value)"><option>Researching</option><option>Applied</option><option>Screening</option><option>HM Screen</option><option>Panel</option><option>Offer</option><option>They Passed</option><option>I Passed</option></select></div><div class="detail-field"><div class="detail-field-label">Priority</div><select class="detail-select" id="dp-priority" onchange="updateField('priority',this.value)"><option>High</option><option>Med</option><option>Low</option></select></div></div></div>
+<div class="detail-section"><div class="detail-section-label">Role details</div><div class="detail-fields"><div class="detail-field"><div class="detail-field-label">OTE range</div><input class="detail-input" id="dp-ote" placeholder="e.g. $250K&#8211;$1M" onblur="updateField('ote',this.value)"></div><div class="detail-field"><div class="detail-field-label">Remote policy</div><input class="detail-input" id="dp-remote" placeholder="Remote / Hybrid / Onsite" onblur="updateField('remote',this.value)"></div><div class="detail-field"><div class="detail-field-label">Source</div><input class="detail-input" id="dp-source" placeholder="Recruiter / Self-sourced" onblur="updateField('source',this.value)"></div><div class="detail-field"><div class="detail-field-label">Contact</div><input class="detail-input" id="dp-contact" placeholder="Name / status" onblur="updateField('contact',this.value)"></div></div></div>
+<div class="detail-section"><div class="detail-section-label">Next step</div><input class="detail-input" id="dp-nextStep" placeholder="What needs to happen next?" onblur="updateField('nextStep',this.value)" style="width:100%"></div>
+<div class="detail-section"><div class="detail-section-label">Notes &amp; research</div><textarea class="detail-textarea" id="dp-notes" placeholder="Company research, impressions, red flags, comp notes..." onblur="updateField('notes',this.value)" style="min-height:120px"></textarea></div>
+<div class="detail-section"><div class="detail-section-label">Interview prep</div><textarea class="detail-textarea" id="dp-prep" placeholder="Stories to use, questions to ask, key personas..." onblur="updateField('prep',this.value)"></textarea></div>
 </div>
-<!-- Add Modal -->
+<div class="detail-footer"><button class="btn-accent btn" style="font-size:12px;background:var(--red);border-color:var(--red);color:#fff" onclick="removeOpp()">Remove opportunity</button><div style="flex:1"></div><div style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;align-self:center" id="dp-lastmod"></div></div>
+</div>
 <div class="modal-bg" id="addModal">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-title">New opportunity</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Company</label>
-        <input class="detail-input" id="new-company" placeholder="Company name">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Role</label>
-        <input class="detail-input" id="new-role" placeholder="e.g. Enterprise AE" value="Enterprise AE">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Stage</label>
-        <select class="detail-select" id="new-stage">
-          <option>Researching</option><option>Applied</option><option>Screening</option>
-          <option>HM Screen</option><option>Panel</option><option>Offer</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Priority</label>
-        <select class="detail-select" id="new-priority">
-          <option>High</option><option selected>Med</option><option>Low</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">OTE range</label>
-        <input class="detail-input" id="new-ote" placeholder="$250K–$1M">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Source</label>
-        <input class="detail-input" id="new-source" placeholder="Recruiter / Self-sourced">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Notes</label>
-      <textarea class="detail-textarea" id="new-notes" placeholder="Initial thoughts..."></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeAddModal()">Cancel</button>
-      <button class="btn-accent btn" onclick="addOpp()">Add opportunity</button>
-    </div>
-  </div>
+<div class="modal" onclick="event.stopPropagation()">
+<div class="modal-title">New opportunity</div>
+<div class="form-row"><div class="form-group"><label class="form-label">Company</label><input class="detail-input" id="new-company" placeholder="Company name"></div><div class="form-group"><label class="form-label">Role</label><input class="detail-input" id="new-role" placeholder="e.g. Enterprise AE" value="Enterprise AE"></div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">Stage</label><select class="detail-select" id="new-stage"><option>Researching</option><option>Applied</option><option>Screening</option><option>HM Screen</option><option>Panel</option><option>Offer</option></select></div><div class="form-group"><label class="form-label">Priority</label><select class="detail-select" id="new-priority"><option>High</option><option selected>Med</option><option>Low</option></select></div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">OTE range</label><input class="detail-input" id="new-ote" placeholder="$250K&#8211;$1M"></div><div class="form-group"><label class="form-label">Source</label><input class="detail-input" id="new-source" placeholder="Recruiter / Self-sourced"></div></div>
+<div class="form-group"><label class="form-label">Notes</label><textarea class="detail-textarea" id="new-notes" placeholder="Initial thoughts..."></textarea></div>
+<div class="modal-footer"><button class="btn" onclick="closeAddModal()">Cancel</button><button class="btn-accent btn" onclick="addOpp()">Add opportunity</button></div>
+</div>
 </div>
 <script>
-// ── Firebase config ──────────────────────────────────────────
+// ── Firebase init ──────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyCo0NyjbmgJSsotRWDf-XctWBDf8P_zwpc",
   authDomain: "job-search-crm-d5178.firebaseapp.com",
@@ -313,7 +179,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const OPPS_COL = db.collection('opportunities');
 
-// ── Constants ────────────────────────────────────────────────
+// ── Constants ──────────────────────────────────────────────
 const STAGE_ORDER = ['Offer','Panel','HM Screen','Screening','Applied','Researching','They Passed','I Passed'];
 const PRIORITY_ORDER = ['High','Med','Low'];
 const STAGE_COLORS = {
@@ -333,136 +199,98 @@ const AVATAR_COLORS = [
   {bg:'#1a2a2a',color:'#6af0d0'},{bg:'#2a1a2a',color:'#d0a0f0'}
 ];
 
-// ── Helpers ──────────────────────────────────────────────────
-function getAvatarColor(company){
-  let h=0;for(let i=0;i<company.length;i++)h=(h*31+company.charCodeAt(i))&0xffffffff;
-  return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length];
-}
-function initials(company){
-  return company.replace(/[^A-Za-z0-9 ]/g,'').split(' ').filter(Boolean).map(w=>w[0].toUpperCase()).slice(0,2).join('')||'??';
-}
-function today(){return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});}
-function setSyncStatus(msg,color){
-  const el=document.getElementById('sync-status');
-  if(el){el.textContent=msg;el.style.color=color||'var(--hint)';}
-}
-
-// ── State ────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────
 let opps = [];
 let selectedId = null;
 let currentView = 'list';
-let nextLocalId = Date.now(); // used only as temp id before Firestore assigns one
 
-// ── Firestore helpers ────────────────────────────────────────
-async function saveOpp(o) {
+// ── Helpers ────────────────────────────────────────────────
+function getAvatarColor(c){let h=0;for(let i=0;i<c.length;i++)h=(h*31+c.charCodeAt(i))&0xffffffff;return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length];}
+function initials(c){return c.replace(/[^A-Za-z0-9 ]/g,'').split(' ').filter(Boolean).map(w=>w[0].toUpperCase()).slice(0,2).join('')||'??';}
+function today(){return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function setSyncStatus(msg,color){const el=document.getElementById('sync-status');if(el){el.textContent=msg;el.style.color=color||'var(--hint)';}}
+
+// ── Firestore ──────────────────────────────────────────────
+async function saveOpp(o){
   setSyncStatus('Saving…','var(--amber)');
-  try {
-    if (o.firestoreId) {
-      await OPPS_COL.doc(o.firestoreId).set(toFirestore(o));
-    } else {
-      const ref = await OPPS_COL.add(toFirestore(o));
-      o.firestoreId = ref.id;
-    }
+  try{
+    if(o.firestoreId){await OPPS_COL.doc(o.firestoreId).set(toFS(o));}
+    else{const ref=await OPPS_COL.add(toFS(o));o.firestoreId=ref.id;}
     setSyncStatus('Saved ✓','var(--accent)');
     setTimeout(()=>setSyncStatus('Synced','var(--hint)'),2000);
-    document.getElementById('last-updated').textContent = today();
-  } catch(e) {
-    setSyncStatus('Save failed','var(--red)');
-    console.error('Firestore save error:', e);
-  }
+    document.getElementById('last-updated').textContent=today();
+  }catch(e){setSyncStatus('Error','var(--red)');console.error(e);}
 }
+async function deleteOpp(o){if(o.firestoreId)await OPPS_COL.doc(o.firestoreId).delete();}
+function toFS(o){const {firestoreId,...d}=o;return d;}
 
-async function deleteOpp(o) {
-  if (o.firestoreId) {
-    await OPPS_COL.doc(o.firestoreId).delete();
-  }
-}
-
-function toFirestore(o) {
-  const {firestoreId, ...data} = o;
-  return data;
-}
-
-async function loadFromFirestore() {
+async function loadFromFirestore(){
   setSyncStatus('Loading…','var(--amber)');
-  try {
-    const snap = await OPPS_COL.get();
-    if (snap.empty) {
-      // First run — seed with sample data
-      opps = getSampleData();
-      for (const o of opps) { await saveOpp(o); }
-    } else {
-      opps = snap.docs.map(doc => ({firestoreId: doc.id, ...doc.data()}));
+  try{
+    const snap=await OPPS_COL.get();
+    if(snap.empty){
+      opps=getSampleData();
+      for(const o of opps)await saveOpp(o);
+    }else{
+      opps=snap.docs.map(doc=>({firestoreId:doc.id,...doc.data()}));
     }
     setSyncStatus('Synced','var(--hint)');
     renderCurrentView();
-  } catch(e) {
-    setSyncStatus('Offline','var(--red)');
-    console.error('Firestore load error:', e);
-  }
+  }catch(e){setSyncStatus('Offline','var(--red)');console.error('Load error:',e);}
 }
 
-// ── Sample data (first run only) ────────────────────────────
-function getSampleData() {
-  return [
-    {id:1,company:'Modular',role:'Enterprise AE',stage:'Researching',priority:'High',ote:'$250K–$500K',remote:'Remote-friendly',source:'Recruiter',contact:'',lastActivity:'Mar 18',nextStep:'Research GTM motion + ICP fit',notes:'AI infrastructure / developer tools. Max Howell (Homebrew creator) founded. Strong eng brand. Evaluate sales maturity and enterprise motion.',prep:''},
-    {id:2,company:'Decagon',role:'Enterprise AE',stage:'Screening',priority:'High',ote:'$250K–$1M',remote:'Remote',source:'Inbound',contact:'Recruiter call scheduled',lastActivity:'Mar 19',nextStep:'Prep recruiter call — MEDDPICC angles + "why Decagon" narrative',notes:'AI customer support automation. Strong customer logos. Evaluate stage of enterprise motion and comp structure.',prep:'Proof points: deal velocity at Braze, CX buyer experience. Questions: quota attainment, enterprise vs. mid-market split, territory?'},
-    {id:3,company:'OpenRouter',role:'Enterprise AE',stage:'Researching',priority:'Med',ote:'TBD',remote:'Unknown',source:'Self-sourced',contact:'',lastActivity:'Mar 15',nextStep:'Dig into enterprise vs. PLG split — is there a real AE motion?',notes:'LLM routing/aggregation layer. Interesting infrastructure play. Unclear if enterprise sales motion is mature enough for a dedicated AE.',prep:''},
-    {id:4,company:'Profound',role:'Enterprise AE',stage:'Researching',priority:'Med',ote:'$100K–$500K',remote:'Hybrid',source:'Recruiter',contact:'',lastActivity:'Mar 16',nextStep:'Validate revenue claims + funding story before investing more time',notes:'AI search / brand visibility for LLMs. Novel category. Need to pressure-test how real enterprise demand is vs. PLG.',prep:''},
-    {id:5,company:'TechWolf',role:'Enterprise AE',stage:'Panel',priority:'High',ote:'$250K–$750K',remote:'Remote',source:'Recruiter',contact:'Hiring Manager intro done',lastActivity:'Mar 20',nextStep:'Prep panel presentation — sales philosophy + 30/60/90 plan',notes:'AI skills intelligence. Strong HR/L&D buyer motion. Comp structure unclear — push on OTE split and equity.',prep:'Theme: product fluency over methodology theater. Deal story: $400K Braze expansion — discovery depth, multi-threading. 30/60/90: ramp → first pipeline → territory plan.'}
+function getSampleData(){
+  return[
+    {id:1,company:'Modular',role:'Enterprise AE',stage:'Researching',priority:'High',ote:'$250K–$500K',remote:'Remote-friendly',source:'Recruiter',contact:'',lastActivity:'Mar 18',nextStep:'Research GTM motion + ICP fit',notes:'AI infrastructure / developer tools. Strong eng brand. Evaluate sales maturity.',prep:''},
+    {id:2,company:'Decagon',role:'Enterprise AE',stage:'Screening',priority:'High',ote:'$250K–$1M',remote:'Remote',source:'Inbound',contact:'Recruiter call scheduled',lastActivity:'Mar 19',nextStep:'Prep recruiter call — MEDDPICC angles + "why Decagon" narrative',notes:'AI customer support automation. Strong logos. Evaluate enterprise motion and comp.',prep:'Proof points: deal velocity at Braze. Questions: quota attainment, territory?'},
+    {id:3,company:'OpenRouter',role:'Enterprise AE',stage:'Researching',priority:'Med',ote:'TBD',remote:'Unknown',source:'Self-sourced',contact:'',lastActivity:'Mar 15',nextStep:'Dig into enterprise vs. PLG split',notes:'LLM routing layer. Unclear if enterprise AE motion is mature.',prep:''},
+    {id:4,company:'Profound',role:'Enterprise AE',stage:'Researching',priority:'Med',ote:'$100K–$500K',remote:'Hybrid',source:'Recruiter',contact:'',lastActivity:'Mar 16',nextStep:'Validate revenue claims + funding story',notes:'AI search / brand visibility for LLMs. Novel category.',prep:''},
+    {id:5,company:'TechWolf',role:'Enterprise AE',stage:'Panel',priority:'High',ote:'$250K–$750K',remote:'Remote',source:'Recruiter',contact:'Hiring Manager intro done',lastActivity:'Mar 20',nextStep:'Prep panel presentation — sales philosophy + 30/60/90',notes:'AI skills intelligence. Strong HR/L&D buyer motion.',prep:'Theme: product fluency. Deal story: $400K Braze expansion. 30/60/90: ramp → first pipeline → territory plan.'}
   ];
 }
-</script>
-<script>
-// ── Filters & rendering ───────────────────────────────────────
+
+// ── Render ─────────────────────────────────────────────────
 function getFiltered(){
   const stage=document.getElementById('filterStage').value;
   const priority=document.getElementById('filterPriority').value;
   const sort=document.getElementById('filterSort').value;
   let list=opps.filter(o=>(!stage||o.stage===stage)&&(!priority||o.priority===priority));
-  if(sort==='stage') list.sort((a,b)=>STAGE_ORDER.indexOf(a.stage)-STAGE_ORDER.indexOf(b.stage));
-  else if(sort==='priority') list.sort((a,b)=>PRIORITY_ORDER.indexOf(a.priority)-PRIORITY_ORDER.indexOf(b.priority));
-  else if(sort==='company') list.sort((a,b)=>a.company.localeCompare(b.company));
-  else if(sort==='date') list.sort((a,b)=>a.lastActivity>b.lastActivity?-1:1);
+  if(sort==='stage')list.sort((a,b)=>STAGE_ORDER.indexOf(a.stage)-STAGE_ORDER.indexOf(b.stage));
+  else if(sort==='priority')list.sort((a,b)=>PRIORITY_ORDER.indexOf(a.priority)-PRIORITY_ORDER.indexOf(b.priority));
+  else if(sort==='company')list.sort((a,b)=>a.company.localeCompare(b.company));
+  else if(sort==='date')list.sort((a,b)=>a.lastActivity>b.lastActivity?-1:1);
   return list;
 }
 
 function renderStats(){
   const CLOSED=['They Passed','I Passed'];
   const active=opps.filter(o=>!CLOSED.includes(o.stage)).length;
-  const inProgress=opps.filter(o=>['Screening','HM Screen','Panel','Offer'].includes(o.stage)).length;
+  const inProg=opps.filter(o=>['Screening','HM Screen','Panel','Offer'].includes(o.stage)).length;
   const high=opps.filter(o=>o.priority==='High'&&!CLOSED.includes(o.stage)).length;
+  const closed=opps.filter(o=>CLOSED.includes(o.stage)).length;
   document.getElementById('stats-row').innerHTML=
-    '<div class="stat-cell"><div class="stat-label">Total</div><div class="stat-value">'+opps.length+'</div></div>'+
-    '<div class="stat-cell"><div class="stat-label">Active</div><div class="stat-value">'+active+'</div></div>'+
-    '<div class="stat-cell"><div class="stat-label">In process</div><div class="stat-value accent">'+inProgress+'</div></div>'+
-    '<div class="stat-cell"><div class="stat-label">High priority</div><div class="stat-value">'+high+'</div></div>'+
-    '<div class="stat-cell"><div class="stat-label">Closed</div><div class="stat-value" style="color:var(--hint)">'+opps.filter(o=>CLOSED.includes(o.stage)).length+'</div></div>';
+    stat('Total',opps.length,'')+stat('Active',active,'')+stat('In process',inProg,' accent')+stat('High priority',high,'')+stat('Closed',closed,' style="color:var(--hint)"');
   document.getElementById('nav-count-list').textContent=active;
   document.getElementById('nav-count-pipeline').textContent=active;
-  const stageCounts={};
-  STAGE_ORDER.forEach(s=>stageCounts[s]=opps.filter(o=>o.stage===s).length);
+  const sc={};STAGE_ORDER.forEach(s=>sc[s]=opps.filter(o=>o.stage===s).length);
   document.getElementById('stage-nav').innerHTML=STAGE_ORDER.map(s=>
     '<button class="nav-item" onclick="filterByStage(''+s+'')" style="font-size:12px">'+
     '<span style="width:6px;height:6px;border-radius:50%;background:'+STAGE_COLORS[s].dot+';flex-shrink:0;display:inline-block"></span> '+
-    s+'<span class="nav-count">'+stageCounts[s]+'</span></button>'
+    s+'<span class="nav-count">'+sc[s]+'</span></button>'
   ).join('');
 }
-
-function filterByStage(stage){document.getElementById('filterStage').value=stage;renderCurrentView();}
+function stat(label,val,cls){return '<div class="stat-cell"><div class="stat-label">'+label+'</div><div class="stat-value'+cls+'">'+val+'</div></div>';}
 
 function renderListView(){
   const list=getFiltered();
   if(!list.length){document.getElementById('list-view').innerHTML='<div style="padding:40px;text-align:center;color:var(--hint);font-size:13px">No opportunities match the current filters.</div>';return;}
-  document.getElementById('list-view').innerHTML=
-    '<div class="list-view"><div class="list-header"><div>Company</div><div>Stage</div><div>Priority</div><div>OTE</div><div>Next step</div><div>Last activity</div></div>'+
+  document.getElementById('list-view').innerHTML='<div class="list-view"><div class="list-header"><div>Company</div><div>Stage</div><div>Priority</div><div>OTE</div><div>Next step</div><div>Last activity</div></div>'+
     list.map(o=>{
-      const av=getAvatarColor(o.company);
-      const sid=o.firestoreId||o.id;
+      const av=getAvatarColor(o.company),sid=o.firestoreId||String(o.id);
       return '<div class="list-row '+(selectedId===sid?'selected':'')+'" onclick="openDetail(''+sid+'')">'+
         '<div class="company-cell"><div class="avatar" style="background:'+av.bg+';color:'+av.color+'">'+initials(o.company)+'</div>'+
         '<div><div class="company-name">'+o.company+'</div><div class="company-role">'+o.role+'</div></div></div>'+
-        '<div><span class="badge '+(STAGE_COLORS[o.stage]||STAGE_COLORS['Researching']).cls+'">'+o.stage+'</span></div>'+
+        '<div><span class="badge '+(STAGE_COLORS[o.stage]||STAGE_COLORS.Researching).cls+'">'+o.stage+'</span></div>'+
         '<div><span class="badge '+PRIORITY_CLS[o.priority]+'">'+o.priority+'</span></div>'+
         '<div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">'+(o.ote||'—')+'</div>'+
         '<div class="next-step-cell">'+(o.nextStep||'—')+'</div>'+
@@ -472,51 +300,38 @@ function renderListView(){
 
 function renderPipelineView(){
   const all=getFiltered();
-  document.getElementById('pipeline-view').innerHTML=
-    '<div class="pipeline">'+
+  document.getElementById('pipeline-view').innerHTML='<div class="pipeline">'+
     STAGE_ORDER.map(stage=>{
-      const cards=all.filter(o=>o.stage===stage);
-      const sc=STAGE_COLORS[stage]||STAGE_COLORS['Researching'];
-      return '<div class="pipeline-col">'+
-        '<div class="pipeline-header"><span style="width:6px;height:6px;border-radius:50%;background:'+sc.dot+';display:inline-block;flex-shrink:0"></span>'+
+      const cards=all.filter(o=>o.stage===stage),sc=STAGE_COLORS[stage];
+      return '<div class="pipeline-col"><div class="pipeline-header">'+
+        '<span style="width:6px;height:6px;border-radius:50%;background:'+sc.dot+';display:inline-block;flex-shrink:0"></span>'+
         '<span class="pipeline-col-name">'+stage+'</span><span class="pipeline-count">'+cards.length+'</span></div>'+
         cards.map(o=>{
-          const av=getAvatarColor(o.company);
-          const sid=o.firestoreId||o.id;
+          const sid=o.firestoreId||String(o.id);
           return '<div class="pipeline-card" onclick="openDetail(''+sid+'')">'+
             '<div class="pipeline-card-company">'+o.company+'</div>'+
             '<div class="pipeline-card-role">'+o.role+'</div>'+
-            '<div class="pipeline-card-footer">'+
-            '<span class="badge '+PRIORITY_CLS[o.priority]+'" style="font-size:10px">'+o.priority+'</span>'+
+            '<div class="pipeline-card-footer"><span class="badge '+PRIORITY_CLS[o.priority]+'" style="font-size:10px">'+o.priority+'</span>'+
             '<span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace">'+(o.ote||'—')+'</span></div></div>';
         }).join('')+'</div>';
     }).join('')+'</div>';
 }
 
 function renderCurrentView(){renderStats();if(currentView==='list')renderListView();else renderPipelineView();}
+function filterByStage(s){document.getElementById('filterStage').value=s;renderCurrentView();}
 
 function setView(view,btn){
   currentView=view;
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  const lv=document.getElementById('list-view'),pv=document.getElementById('pipeline-view');
-  const vtabs=document.querySelectorAll('.view-tab');
-  if(view==='list'){lv.style.display='';pv.style.display='none';vtabs[0].classList.add('active');vtabs[1].classList.remove('active');}
-  else{lv.style.display='none';pv.style.display='';vtabs[1].classList.add('active');vtabs[0].classList.remove('active');}
+  const lv=document.getElementById('list-view'),pv=document.getElementById('pipeline-view'),vt=document.querySelectorAll('.view-tab');
+  if(view==='list'){lv.style.display='';pv.style.display='none';vt[0].classList.add('active');vt[1].classList.remove('active');}
+  else{lv.style.display='none';pv.style.display='';vt[1].classList.add('active');vt[0].classList.remove('active');}
   renderCurrentView();
 }
+function setViewTab(view,btn){currentView=view;document.querySelectorAll('.view-tab').forEach(el=>el.classList.remove('active'));btn.classList.add('active');const lv=document.getElementById('list-view'),pv=document.getElementById('pipeline-view');if(view==='list'){lv.style.display='';pv.style.display='none';renderListView();}else{lv.style.display='none';pv.style.display='';renderPipelineView();}}
 
-function setViewTab(view,btn){
-  currentView=view;
-  document.querySelectorAll('.view-tab').forEach(el=>el.classList.remove('active'));
-  btn.classList.add('active');
-  const lv=document.getElementById('list-view'),pv=document.getElementById('pipeline-view');
-  if(view==='list'){lv.style.display='';pv.style.display='';renderListView();}
-  else{lv.style.display='none';pv.style.display='';renderPipelineView();}
-}
-</script>
-<script>
-// ── Detail panel ──────────────────────────────────────────────
+// ── Detail panel ──────────────────────────────────────────
 function openDetail(sid){
   const o=opps.find(x=>(x.firestoreId||String(x.id))===String(sid));
   if(!o)return;
@@ -536,86 +351,53 @@ function openDetail(sid){
   document.getElementById('detailPanel').classList.add('open');
   renderCurrentView();
 }
-
 function closeDetail(){selectedId=null;document.getElementById('detailPanel').classList.remove('open');renderCurrentView();}
-
 function updateField(field,value){
   const o=opps.find(x=>(x.firestoreId||String(x.id))===String(selectedId));
   if(!o)return;
-  o[field]=value;
-  o.lastActivity=today();
+  o[field]=value;o.lastActivity=today();
   document.getElementById('dp-lastmod').textContent='Updated '+today();
-  saveOpp(o);
-  renderCurrentView();
+  saveOpp(o);renderCurrentView();
 }
-
 async function removeOpp(){
   if(!selectedId)return;
   const o=opps.find(x=>(x.firestoreId||String(x.id))===String(selectedId));
   if(!o||!confirm('Remove '+o.company+' from your pipeline?'))return;
   await deleteOpp(o);
   opps=opps.filter(x=>(x.firestoreId||String(x.id))!==String(selectedId));
-  selectedId=null;
-  closeDetail();
+  selectedId=null;closeDetail();
 }
 
-// ── Add modal ─────────────────────────────────────────────────
+// ── Add modal ─────────────────────────────────────────────
 function openAddModal(){document.getElementById('addModal').classList.add('open');document.getElementById('new-company').focus();}
-
 function closeAddModal(){
   document.getElementById('addModal').classList.remove('open');
-  ['new-company','new-role','new-ote','new-source','new-notes'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.value=(id==='new-role'?'Enterprise AE':'');
-  });
+  ['new-company','new-ote','new-source','new-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('new-role').value='Enterprise AE';
   document.getElementById('new-stage').value='Researching';
   document.getElementById('new-priority').value='Med';
 }
-
 async function addOpp(){
   const company=document.getElementById('new-company').value.trim();
   if(!company){document.getElementById('new-company').focus();return;}
-  const o={
-    id:Date.now(),
-    company,
-    role:document.getElementById('new-role').value||'Enterprise AE',
-    stage:document.getElementById('new-stage').value,
-    priority:document.getElementById('new-priority').value,
-    ote:document.getElementById('new-ote').value,
-    remote:'',
-    source:document.getElementById('new-source').value,
-    contact:'',
-    lastActivity:today(),
-    nextStep:'',
-    notes:document.getElementById('new-notes').value,
-    prep:''
-  };
-  opps.unshift(o);
-  await saveOpp(o);
-  closeAddModal();
-  renderCurrentView();
-  setTimeout(()=>openDetail(o.firestoreId||String(o.id)),100);
+  const o={id:Date.now(),company,role:document.getElementById('new-role').value||'Enterprise AE',stage:document.getElementById('new-stage').value,priority:document.getElementById('new-priority').value,ote:document.getElementById('new-ote').value,remote:'',source:document.getElementById('new-source').value,contact:'',lastActivity:today(),nextStep:'',notes:document.getElementById('new-notes').value,prep:''};
+  opps.unshift(o);await saveOpp(o);closeAddModal();renderCurrentView();
+  setTimeout(()=>openDetail(o.firestoreId||String(o.id)),150);
 }
 
-// ── Export CSV ────────────────────────────────────────────────
+// ── Export CSV ────────────────────────────────────────────
 function exportCSV(){
   const headers=['Company','Role','Stage','Priority','OTE','Remote','Source','Contact','Last Activity','Next Step','Notes'];
   const rows=opps.map(o=>[o.company,o.role,o.stage,o.priority,o.ote||'',o.remote||'',o.source||'',o.contact||'',o.lastActivity||'',o.nextStep||'',o.notes||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"'));
   const csv=[headers.join(','),...rows.map(r=>r.join(','))].join('\n');
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download='job-search-pipeline-'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='pipeline-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
 }
 
-// ── Event listeners ───────────────────────────────────────────
+// ── Events ────────────────────────────────────────────────
 document.getElementById('addModal').addEventListener('click',closeAddModal);
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeDetail();closeAddModal();}
-  if(e.key==='n'&&!e.target.matches('input,textarea,select'))openAddModal();
-});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeAddModal();}if(e.key==='n'&&!e.target.matches('input,textarea,select'))openAddModal();});
 
-// ── Init ──────────────────────────────────────────────────────
+// ── Start ─────────────────────────────────────────────────
 loadFromFirestore();
 </script>
 </body>
