@@ -66,6 +66,7 @@ body{font-family:'Inter',ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFon
 .stat-label{font-size:11px;color:var(--hint);font-weight:500;margin-bottom:4px}
 .stat-value{font-size:24px;font-weight:600;letter-spacing:-0.03em;line-height:1.15;color:var(--text);font-variant-numeric:tabular-nums}
 .stat-value.accent{color:var(--accent)}
+.stat-value.muted{color:var(--hint)}
 .content{padding:20px 28px 32px;flex:1;max-width:100%}
 .view-tabs{display:flex;gap:0;margin-bottom:16px;background:var(--surface2);border-radius:var(--radius-sm);padding:2px;width:fit-content;border:1px solid var(--border)}
 .view-tab{padding:5px 12px;border-radius:3px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:background 0.12s,color 0.12s}
@@ -375,7 +376,7 @@ function getFiltered(){
   if(sort==='stage')list.sort((a,b)=>STAGE_ORDER.indexOf(a.stage)-STAGE_ORDER.indexOf(b.stage));
   else if(sort==='priority')list.sort((a,b)=>PRIORITY_ORDER.indexOf(a.priority)-PRIORITY_ORDER.indexOf(b.priority));
   else if(sort==='company')list.sort((a,b)=>a.company.localeCompare(b.company));
-  else if(sort==='date')list.sort((a,b)=>a.lastActivity>b.lastActivity?-1:1);
+  else if(sort==='date')list.sort((a,b)=>(b.lastActivityTs||0)-(a.lastActivityTs||0));
   return list;
 }
 
@@ -386,7 +387,7 @@ function renderStats(){
   const high=opps.filter(o=>o.priority==='High'&&!CLOSED.includes(o.stage)).length;
   const closed=opps.filter(o=>CLOSED.includes(o.stage)).length;
   document.getElementById('stats-row').innerHTML=
-    stat('Total',opps.length,'')+stat('Active',active,'')+stat('In process',inProg,' accent')+stat('High priority',high,'')+stat('Closed',closed,' style="color:var(--hint)"');
+    stat('Total',opps.length,'')+stat('Active',active,'')+stat('In process',inProg,' accent')+stat('High priority',high,'')+stat('Closed',closed,' muted');
   document.getElementById('nav-count-list').textContent=active;
   document.getElementById('nav-count-pipeline').textContent=active;
   const nf=document.getElementById('nav-count-feed');if(nf)nf.textContent=feedItems.length;
@@ -405,14 +406,14 @@ function renderListView(){
   document.getElementById('list-view').innerHTML='<div class="list-view"><div class="list-header"><div>Company</div><div>Stage</div><div>Priority</div><div>OTE</div><div>Next step</div><div>Last activity</div></div>'+
     list.map(o=>{
       const av=getAvatarColor(o.company),sid=o.firestoreId||String(o.id);
-      return '<div class="list-row '+(selectedId===sid?'selected':'')+'" onclick="openDetail(this.dataset.sid)" data-sid="'+sid+'">'+
+      return '<div class="list-row '+(selectedId===sid?'selected':'')+'" onclick="openDetail(this.dataset.sid)" data-sid="'+escapeHtml(sid)+'">'+
         '<div class="company-cell"><div class="avatar" style="background:'+av.bg+';color:'+av.color+'">'+initials(o.company)+'</div>'+
-        '<div><div class="company-name">'+o.company+'</div><div class="company-role">'+o.role+'</div></div></div>'+
-        '<div><span class="badge '+(STAGE_COLORS[o.stage]||STAGE_COLORS.Researching).cls+'">'+o.stage+'</span></div>'+
-        '<div><span class="badge '+PRIORITY_CLS[o.priority]+'">'+o.priority+'</span></div>'+
-        '<div style="font-size:12px;color:var(--muted);font-family:monospace">'+(o.ote||'—')+'</div>'+
-        '<div class="next-step-cell">'+(o.nextStep||'—')+'</div>'+
-        '<div class="date-cell">'+(o.lastActivity||'—')+'</div></div>';
+        '<div><div class="company-name">'+escapeHtml(o.company)+'</div><div class="company-role">'+escapeHtml(o.role)+'</div></div></div>'+
+        '<div><span class="badge '+(STAGE_COLORS[o.stage]||STAGE_COLORS.Researching).cls+'">'+escapeHtml(o.stage)+'</span></div>'+
+        '<div><span class="badge '+PRIORITY_CLS[o.priority]+'">'+escapeHtml(o.priority)+'</span></div>'+
+        '<div style="font-size:12px;color:var(--muted);font-family:monospace">'+escapeHtml(o.ote||'—')+'</div>'+
+        '<div class="next-step-cell">'+escapeHtml(o.nextStep||'—')+'</div>'+
+        '<div class="date-cell">'+escapeHtml(o.lastActivity||'—')+'</div></div>';
     }).join('')+'</div>';
 }
 
@@ -426,11 +427,11 @@ function renderPipelineView(){
         '<span class="pipeline-col-name">'+stage+'</span><span class="pipeline-count">'+cards.length+'</span></div>'+
         cards.map(o=>{
           const sid=o.firestoreId||String(o.id);
-          return '<div class="pipeline-card" onclick="openDetail(this.dataset.sid)" data-sid="'+sid+'">'+
-            '<div class="pipeline-card-company">'+o.company+'</div>'+
-            '<div class="pipeline-card-role">'+o.role+'</div>'+
-            '<div class="pipeline-card-footer"><span class="badge '+PRIORITY_CLS[o.priority]+'" style="font-size:10px">'+o.priority+'</span>'+
-            '<span style="font-size:11px;color:var(--hint);font-family:monospace">'+(o.ote||'—')+'</span></div></div>';
+          return '<div class="pipeline-card" onclick="openDetail(this.dataset.sid)" data-sid="'+escapeHtml(sid)+'">'+
+            '<div class="pipeline-card-company">'+escapeHtml(o.company)+'</div>'+
+            '<div class="pipeline-card-role">'+escapeHtml(o.role)+'</div>'+
+            '<div class="pipeline-card-footer"><span class="badge '+PRIORITY_CLS[o.priority]+'" style="font-size:10px">'+escapeHtml(o.priority)+'</span>'+
+            '<span style="font-size:11px;color:var(--hint);font-family:monospace">'+escapeHtml(o.ote||'—')+'</span></div></div>';
         }).join('')+'</div>';
     }).join('')+'</div>';
 }
@@ -562,7 +563,7 @@ function closeDetail(){selectedId=null;document.getElementById('detailPanel').cl
 function updateField(field,value){
   const o=opps.find(x=>(x.firestoreId||String(x.id))===String(selectedId));
   if(!o)return;
-  o[field]=value;o.lastActivity=today();
+  o[field]=value;o.lastActivity=today();o.lastActivityTs=Date.now();
   document.getElementById('dp-lastmod').textContent='Updated '+today();
   saveOpp(o);renderCurrentView();
 }
@@ -587,7 +588,7 @@ function closeAddModal(){
 async function addOpp(){
   const company=document.getElementById('new-company').value.trim();
   if(!company){document.getElementById('new-company').focus();return;}
-  const o={id:Date.now(),company,role:document.getElementById('new-role').value||'Enterprise AE',stage:document.getElementById('new-stage').value,priority:document.getElementById('new-priority').value,ote:document.getElementById('new-ote').value,remote:'',source:document.getElementById('new-source').value,contact:'',lastActivity:today(),nextStep:'',notes:document.getElementById('new-notes').value,prep:'',companyInfo:'',salesTeam:'',competitors:'',jobPostings:''};
+  const o={id:Date.now(),company,role:document.getElementById('new-role').value||'Enterprise AE',stage:document.getElementById('new-stage').value,priority:document.getElementById('new-priority').value,ote:document.getElementById('new-ote').value,remote:'',source:document.getElementById('new-source').value,contact:'',lastActivity:today(),lastActivityTs:Date.now(),nextStep:'',notes:document.getElementById('new-notes').value,prep:'',companyInfo:'',salesTeam:'',competitors:'',jobPostings:''};
   opps.unshift(o);await saveOpp(o);closeAddModal();renderCurrentView();
   setTimeout(()=>openDetail(o.firestoreId||String(o.id)),150);
 }
@@ -630,7 +631,7 @@ async function promoteFeedItem(fid){
   if(!item)return;
   const safeFeedUrl=safeUrl(item.url);
   const urlLine=safeFeedUrl?(safeFeedUrl+'\n'+(item.title||'')):(item.title||'');
-  const o={id:Date.now(),company:item.company||'Company',role:item.title||'Enterprise AE',stage:'Researching',priority:'Med',ote:'',remote:'',source:item.source||'Job feed',contact:'',lastActivity:today(),nextStep:'Review posting & decide to apply',notes:item.notes||'',prep:'',companyInfo:'',salesTeam:'',competitors:'',jobPostings:urlLine};
+  const o={id:Date.now(),company:item.company||'Company',role:item.title||'Enterprise AE',stage:'Researching',priority:'Med',ote:'',remote:'',source:item.source||'Job feed',contact:'',lastActivity:today(),lastActivityTs:Date.now(),nextStep:'Review posting & decide to apply',notes:item.notes||'',prep:'',companyInfo:'',salesTeam:'',competitors:'',jobPostings:urlLine};
   try{
     opps.unshift(o);
     await saveOpp(o);
@@ -663,7 +664,7 @@ document.getElementById('addModal').addEventListener('click',closeAddModal);
 document.getElementById('feedModal').addEventListener('click',closeFeedModal);
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closeDetail();closeAddModal();closeFeedModal();}
-  if(e.key==='n'&&!e.target.matches('input,textarea,select')){
+  if(e.key==='n'&&!e.target.matches('input,textarea,select')&&!document.getElementById('addModal').classList.contains('open')&&!document.getElementById('feedModal').classList.contains('open')){
     if(currentView==='feed')openFeedModal();
     else openAddModal();
   }
